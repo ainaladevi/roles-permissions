@@ -5,9 +5,28 @@ import './CreateRole.css';
 const CreateRole = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
+  const permissionCategories = [
+    {
+      name: 'Moderation',
+      keys: ['moderation.view', 'moderation.act', 'moderation.export']
+    },
+    {
+      name: 'Tickets',
+      keys: ['tickets.view', 'tickets.reply', 'tickets.manage']
+    },
+    {
+      name: 'Audit',
+      keys: ['audit.view', 'audit.view_sensitive', 'audit.export']
+    },
+    {
+      name: 'Settings',
+      keys: ['settings.view', 'settings.edit', 'settings.security_edit', 'settings.integrations_edit']
+    }
+  ];
+
   return (
     <div className="create-role-overlay">
-      <div className="create-role-modal card">
+      <div className="create-role-modal card" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h5 className="fw-bold mb-0">Create New Role</h5>
           <button className="icon-btn" onClick={onClose} type="button" aria-label="Close">
@@ -26,7 +45,28 @@ const CreateRole = ({ isOpen, onClose }) => {
             <textarea className="form-control" rows="3" placeholder="Describe the role's responsibilities..."></textarea>
           </div>
           
-          <div className="d-flex justify-content-end gap-2">
+          <div className="mb-4">
+            <label className="form-label small fw-bold text-muted mb-3">Permissions</label>
+            <div className="border rounded p-3" style={{ borderColor: 'var(--color-border)' }}>
+              {permissionCategories.map((cat, catIdx) => (
+                <div key={catIdx} className="mb-3 last-mb-none">
+                  <h6 className="fw-bold mb-2" style={{ fontSize: '13px' }}>{cat.name}</h6>
+                  <div className="d-flex flex-wrap gap-3">
+                    {cat.keys.map((key, kIdx) => (
+                      <div className="form-check" key={kIdx}>
+                        <input className="form-check-input" type="checkbox" id={`create-${key}`} />
+                        <label className="form-check-label" htmlFor={`create-${key}`} style={{ fontSize: '13px' }}>
+                          {key}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="d-flex justify-content-end gap-2 pt-2">
             <button type="button" className="btn btn-outline-secondary px-4" onClick={onClose}>Cancel</button>
             <button type="button" className="btn btn-primary px-4" style={{ backgroundColor: 'var(--color-primary)', border: 'none' }}>Create Role</button>
           </div>

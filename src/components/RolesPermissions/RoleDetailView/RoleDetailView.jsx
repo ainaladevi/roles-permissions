@@ -5,37 +5,24 @@ import './RoleDetailView.css';
 const RoleDetailView = ({ role, showToast }) => {
   if (!role) return null;
 
-  const modules = [
-    'Dashboard', 
-    'Content moderation', 
-    'Reports', 
-    'Verification', 
-    'Messages', 
-    'Support Agent Desk', 
-    'Roles & permissions', 
-    'Audit logs', 
-    'Settings'
+  const permissionCategories = [
+    {
+      name: 'Moderation',
+      keys: ['moderation.view', 'moderation.act', 'moderation.export']
+    },
+    {
+      name: 'Tickets',
+      keys: ['tickets.view', 'tickets.reply', 'tickets.manage']
+    },
+    {
+      name: 'Audit',
+      keys: ['audit.view', 'audit.view_sensitive', 'audit.export']
+    },
+    {
+      name: 'Settings',
+      keys: ['settings.view', 'settings.edit', 'settings.security_edit', 'settings.integrations_edit']
+    }
   ];
-
-  const getInitialCheck = (moduleName, roleName) => {
-    const roleLower = roleName.toLowerCase();
-    if (roleLower.includes('super admin')) return true;
-    if (roleLower.includes('moderator') || roleLower.includes('manager') || roleLower.includes('l2')) {
-      const denied = ['Roles & permissions', 'Audit logs', 'Settings', 'Support Agent Desk'];
-      return !denied.includes(moduleName);
-    }
-    if (roleLower.includes('support agent')) {
-      const allowed = ['Dashboard', 'Reports', 'Messages', 'Support Agent Desk'];
-      return allowed.includes(moduleName);
-    }
-    if (roleLower.includes('analyst') || roleLower.includes('l1')) {
-      const allowed = ['Dashboard', 'Reports', 'Audit logs'];
-      return allowed.includes(moduleName);
-    }
-    return false;
-  };
-
-  const approvedModules = modules.filter(m => getInitialCheck(m, role.name));
 
   return (
     <div className="role-detail-view d-flex flex-column gap-3 mx-auto" style={{ maxWidth: '1400px' }}>
@@ -58,20 +45,27 @@ const RoleDetailView = ({ role, showToast }) => {
 
       <div className="card p-0">
         <div className="p-4 border-bottom" style={{ borderColor: 'var(--color-divider) !important' }}>
-          <h6 className="fw-bold mb-0">Module access</h6>
+          <h6 className="fw-bold mb-0">Permission access</h6>
         </div>
         <div className="module-list">
-          {modules.map((moduleName, idx) => {
-            const isApproved = getInitialCheck(moduleName, role.name);
-            return (
-              <div key={idx} className="module-item">
-                <span style={{ fontSize: '14px' }}>{moduleName}</span>
-                <div className={`status-pill ${isApproved ? 'approved' : 'rejected'}`}>
-                  {isApproved ? 'Approved' : 'Rejected'}
-                </div>
+          {permissionCategories.map((cat, catIdx) => (
+            <React.Fragment key={catIdx}>
+              <div className="px-4 py-2 fw-bold" style={{ color: 'var(--color-text-muted)', fontSize: '11px', letterSpacing: '0.5px', backgroundColor: 'var(--color-surface-offset)' }}>
+                {cat.name.toUpperCase()}
               </div>
-            );
-          })}
+              {cat.keys.map((key, idx) => {
+                const isApproved = role.permissions?.includes(key);
+                return (
+                  <div key={idx} className="module-item">
+                    <span style={{ fontSize: '14px' }}>{key}</span>
+                    <div className={`status-pill ${isApproved ? 'approved' : 'rejected'}`}>
+                      {isApproved ? 'Approved' : 'Rejected'}
+                    </div>
+                  </div>
+                );
+              })}
+            </React.Fragment>
+          ))}
         </div>
       </div>
 

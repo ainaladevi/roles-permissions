@@ -3,62 +3,48 @@ import { Check, UserPlus } from 'lucide-react';
 import './PermissionMatrix.css';
 
 const PermissionMatrix = ({ roles, showToast, onAddAdmin }) => {
-  const modules = [
-    'Dashboard', 
-    'Content moderation', 
-    'Reports', 
-    'Verification', 
-    'Messages', 
-    'Support Agent Desk', 
-    'Roles & permissions', 
-    'Audit logs', 
-    'Settings'
+  const permissionCategories = [
+    {
+      name: 'Moderation',
+      keys: ['moderation.view', 'moderation.act', 'moderation.export']
+    },
+    {
+      name: 'Tickets',
+      keys: ['tickets.view', 'tickets.reply', 'tickets.manage']
+    },
+    {
+      name: 'Audit',
+      keys: ['audit.view', 'audit.view_sensitive', 'audit.export']
+    },
+    {
+      name: 'Settings',
+      keys: ['settings.view', 'settings.edit', 'settings.security_edit', 'settings.integrations_edit']
+    }
   ];
-
-  const getInitialCheck = (moduleName, roleName) => {
-    const roleLower = roleName.toLowerCase();
-    
-    if (roleLower.includes('super admin')) return true;
-    
-    if (roleLower.includes('moderator') || roleLower.includes('manager') || roleLower.includes('l2')) {
-      const denied = ['Roles & permissions', 'Audit logs', 'Settings', 'Support Agent Desk'];
-      return !denied.includes(moduleName);
-    }
-
-    if (roleLower.includes('support agent')) {
-      const allowed = ['Dashboard', 'Reports', 'Messages', 'Support Agent Desk'];
-      return allowed.includes(moduleName);
-    }
-
-    if (roleLower.includes('analyst') || roleLower.includes('l1')) {
-      const allowed = ['Dashboard', 'Reports', 'Audit logs'];
-      return allowed.includes(moduleName);
-    }
-
-    return false;
-  };
 
   const [permissions, setPermissions] = useState(() => {
     const initial = {};
-    modules.forEach(m => {
-      initial[m] = {};
-      roles.forEach(r => {
-        initial[m][r.name] = getInitialCheck(m, r.name);
+    permissionCategories.forEach(cat => {
+      cat.keys.forEach(key => {
+        initial[key] = {};
+        roles.forEach(r => {
+          initial[key][r.role_id] = r.permissions?.includes(key) || false;
+        });
       });
     });
     return initial;
   });
 
-  const handleToggle = (moduleName, roleName) => {
+  const handleToggle = (key, roleId) => {
     setPermissions(prev => ({
       ...prev,
-      [moduleName]: {
-        ...prev[moduleName],
-        [roleName]: !prev[moduleName][roleName]
+      [key]: {
+        ...prev[key],
+        [roleId]: !prev[key][roleId]
       }
     }));
     
-    showToast(`Permission updated for ${roleName}`);
+    showToast(`Permission updated for role`);
   };
 
   return (
@@ -71,7 +57,7 @@ const PermissionMatrix = ({ roles, showToast, onAddAdmin }) => {
           onClick={onAddAdmin}
         >
           <UserPlus size={16} className="me-2" />
-          Add admin
+          Assign Role
         </button>
       </div>
 
@@ -79,7 +65,7 @@ const PermissionMatrix = ({ roles, showToast, onAddAdmin }) => {
         <table className="table table-borderless permission-matrix-table mb-0">
           <thead>
             <tr>
-              <th className="fw-bold pb-3 ps-2" style={{ color: 'var(--color-text-muted)' }}>MODULE</th>
+              <th className="fw-bold pb-3 ps-2" style={{ color: 'var(--color-text-muted)' }}>PERMISSION KEY</th>
               {roles.map((role, idx) => (
                 <th key={idx} className="text-center fw-bold pb-3 text-uppercase" style={{ color: 'var(--color-text-muted)' }}>
                   {role.name}
@@ -88,23 +74,32 @@ const PermissionMatrix = ({ roles, showToast, onAddAdmin }) => {
             </tr>
           </thead>
           <tbody>
-            {modules.map((moduleName, idx) => (
-              <tr key={idx}>
-                <td className="py-3 ps-2" style={{ fontSize: '14px' }}>{moduleName}</td>
-                {roles.map((role, rIdx) => {
-                  const checked = permissions[moduleName][role.name];
-                  return (
-                    <td key={rIdx} className="text-center py-3">
-                      <div 
-                        className={`matrix-checkbox cursor-pointer ${checked ? 'checked' : ''}`}
-                        onClick={() => handleToggle(moduleName, role.name)}
-                      >
-                        {checked && <Check size={14} strokeWidth={3.5} />}
-                      </div>
-                    </td>
-                  );
-                })}
-              </tr>
+            {permissionCategories.map((cat, catIdx) => (
+              <React.Fragment key={catIdx}>
+                <tr>
+                  <td colSpan={roles.length + 1} className="py-2 pt-4 ps-2 fw-bold" style={{ color: 'var(--color-text-muted)', fontSize: '12px', letterSpacing: '0.5px' }}>
+                    {cat.name.toUpperCase()}
+                  </td>
+                </tr>
+                {cat.keys.map((key, kIdx) => (
+                  <tr key={`${catIdx}-${kIdx}`}>
+                    <td className="py-3 ps-4" style={{ fontSize: '14px', borderBottom: '1px solid var(--color-surface-offset)' }}>{key}</td>
+                    {roles.map((role, rIdx) => {
+                      const checked = permissions[key][role.role_id];
+                      return (
+                        <td key={rIdx} className="text-center py-3" style={{ borderBottom: '1px solid var(--color-surface-offset)' }}>
+                          <div 
+                            className={`matrix-checkbox cursor-pointer ${checked ? 'checked' : ''}`}
+                            onClick={() => handleToggle(key, role.role_id)}
+                          >
+                            {checked && <Check size={14} strokeWidth={3.5} />}
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </React.Fragment>
             ))}
           </tbody>
         </table>
