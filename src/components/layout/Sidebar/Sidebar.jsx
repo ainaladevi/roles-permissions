@@ -11,6 +11,7 @@ import {
   Settings,
   Moon,
   Sun,
+  Users
 } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
 import SidebarItem from '../SidebarItem/SidebarItem';
@@ -39,7 +40,7 @@ const NAV_SECTIONS = [
   {
     label: 'Administration',
     items: [
-      { to: '/roles-permissions', icon: KeyRound, label: 'Roles & Permissions' },
+      { to: '/roles-permissions', icon: KeyRound, label: 'Roles & Permissions', badge: 2 },
       { to: '/audit-logs', icon: ScrollText, label: 'Audit Logs' },
       { to: '/settings', icon: Settings, label: 'Settings' },
     ],

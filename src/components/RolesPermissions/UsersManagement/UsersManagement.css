@@ -1,0 +1,74 @@
+/* UsersManagement.css */
+
+.users-management-container {
+  max-width: 1200px;
+}
+
+.users-tab-btn {
+  border-radius: 0;
+}
+
+.user-avatar-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+}
+
+.user-avatar-large {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  font-size: 24px;
+}
+
+.filter-dropdown-menu {
+  z-index: 1000;
+}
+
+.review-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.review-modal-content {
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  animation: fadein 0.2s ease-out;
+}
+
+.verification-docs-container {
+  background-color: var(--color-surface-offset);
+}
+
+.toast-container-fixed {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-toast {
+  background-color: var(--color-text);
+  color: var(--color-text-inverse);
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  animation: toastin 0.3s ease;
+  box-shadow: var(--shadow-lg);
+}

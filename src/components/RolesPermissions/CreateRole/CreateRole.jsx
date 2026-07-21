@@ -2,7 +2,7 @@ import React from 'react';
 import { X } from 'lucide-react';
 import './CreateRole.css';
 
-const CreateRole = ({ isOpen, onClose }) => {
+const CreateRole = ({ isOpen, onClose, showToast }) => {
   if (!isOpen) return null;
 
   const permissionCategories = [
@@ -26,7 +26,7 @@ const CreateRole = ({ isOpen, onClose }) => {
 
   return (
     <div className="create-role-overlay">
-      <div className="create-role-modal card" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+      <div className="create-role-modal card modal-card" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h5 className="fw-bold mb-0">Create New Role</h5>
           <button className="icon-btn" onClick={onClose} type="button" aria-label="Close">
@@ -68,7 +68,17 @@ const CreateRole = ({ isOpen, onClose }) => {
           
           <div className="d-flex justify-content-end gap-2 pt-2">
             <button type="button" className="btn btn-outline-secondary px-4" onClick={onClose}>Cancel</button>
-            <button type="button" className="btn btn-primary px-4" style={{ backgroundColor: 'var(--color-primary)', border: 'none' }}>Create Role</button>
+            <button 
+              type="button" 
+              className="btn btn-primary px-4" 
+              style={{ backgroundColor: 'var(--color-primary)', border: 'none' }}
+              onClick={() => {
+                if(showToast) showToast('Role created successfully!');
+                onClose();
+              }}
+            >
+              Create Role
+            </button>
           </div>
         </form>
       </div>

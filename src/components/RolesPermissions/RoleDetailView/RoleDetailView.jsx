@@ -2,7 +2,7 @@ import React from 'react';
 import { Shield, Edit2, UserX } from 'lucide-react';
 import './RoleDetailView.css';
 
-const RoleDetailView = ({ role, showToast }) => {
+const RoleDetailView = ({ role, showToast, canEditRoles }) => {
   if (!role) return null;
 
   const permissionCategories = [
@@ -79,7 +79,7 @@ const RoleDetailView = ({ role, showToast }) => {
               <tr>
                 <th className="fw-bold table-header ps-4">ADMIN</th>
                 <th className="fw-bold table-header text-center">STATUS</th>
-                <th className="fw-bold table-header text-end pe-4">ACTIONS</th>
+                {canEditRoles && <th className="fw-bold table-header text-end pe-4">ACTIONS</th>}
               </tr>
             </thead>
             <tbody>
@@ -98,21 +98,23 @@ const RoleDetailView = ({ role, showToast }) => {
                       {admin.status}
                     </div>
                   </td>
-                  <td className="py-2 pe-4 align-middle text-end">
-                    <div className="d-flex justify-content-end gap-2">
-                      <button className="icon-btn border-0 bg-transparent" aria-label="Edit user" onClick={() => showToast(`Edit user ${admin.name}`)}>
-                        <Edit2 size={16} />
-                      </button>
-                      <button className="icon-btn border-0 bg-transparent" aria-label="Remove user" onClick={() => showToast(`User ${admin.name} removed`)}>
-                        <UserX size={16} />
-                      </button>
-                    </div>
-                  </td>
+                  {canEditRoles && (
+                    <td className="py-2 pe-4 align-middle text-end">
+                      <div className="d-flex justify-content-end gap-2">
+                        <button className="icon-btn border-0 bg-transparent" aria-label="Edit user" disabled={role.role_id === 'super_admin'} style={role.role_id === 'super_admin' ? { opacity: 0.5, cursor: 'not-allowed' } : {}} onClick={() => showToast(`Edit user ${admin.name}`)}>
+                          <Edit2 size={16} />
+                        </button>
+                        <button className="icon-btn border-0 bg-transparent" aria-label="Remove user" disabled={role.role_id === 'super_admin'} style={role.role_id === 'super_admin' ? { opacity: 0.5, cursor: 'not-allowed' } : {}} onClick={() => showToast(`User ${admin.name} removed`)}>
+                          <UserX size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
               {!role.admins?.length && (
                 <tr>
-                  <td colSpan="3" className="text-center py-4 text-muted">No admins assigned.</td>
+                  <td colSpan={canEditRoles ? "3" : "2"} className="text-center py-4 text-muted">No admins assigned.</td>
                 </tr>
               )}
             </tbody>

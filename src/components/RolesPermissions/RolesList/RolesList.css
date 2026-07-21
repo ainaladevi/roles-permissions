@@ -1,34 +1,145 @@
 .roles-list-container {
-  padding-bottom: 12px;
-  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  padding-bottom: 24px;
+  padding-top: 8px;
 }
 
 .roles-list-card {
-  flex: 1;
-  min-width: 0;
-  min-height: 180px;
   display: flex;
   flex-direction: column;
-  padding: 18px;
+  padding: 24px;
+  background-color: var(--color-surface);
   border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
-  border-radius: 24px;
-  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s ease, background-color 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  height: 160px;
+  cursor: pointer;
 }
 
 .roles-list-card:hover {
-  border-color: color-mix(in srgb, var(--color-border) 50%, var(--color-primary));
-  transform: translateY(-4px);
+  border-color: var(--color-primary);
   box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .roles-list-card.active {
   border: 1.5px solid var(--color-primary);
   background-color: color-mix(in srgb, var(--color-primary) 3%, transparent);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
 }
 
-.roles-list-desc {
-  line-height: 1.5;
+.card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: auto;
+}
+
+.total-users {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.avatar-stack {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  color: white;
+  margin-left: -10px;
+  position: relative;
+  background-color: var(--color-primary);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.avatar-circle:first-child {
+  margin-left: 0;
+}
+
+.role-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+
+.card-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-role-link {
+  font-size: 13px;
+  color: var(--color-primary);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.edit-role-link:hover {
+  text-decoration: underline;
+}
+
+/* Add New Role Special Card */
+.add-role-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.add-role-illustration {
+  height: 100%;
+  width: 50%;
+  background-image: url('file:///C:/Users/Devi/.gemini/antigravity/brain/f0d1533c-5f89-4da0-ba26-0c5cabe21c9e/add_role_illustration_1784547300721.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-left: -24px;
+}
+
+.add-role-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  width: 50%;
+}
+
+.add-role-btn {
+  background-color: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 12px;
+  transition: opacity 0.2s;
+}
+
+.add-role-btn:hover {
+  opacity: 0.9;
+}
+
+.add-role-text {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
 }

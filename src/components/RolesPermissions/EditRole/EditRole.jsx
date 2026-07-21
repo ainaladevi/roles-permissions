@@ -2,7 +2,7 @@ import React from 'react';
 import { X } from 'lucide-react';
 import './EditRole.css';
 
-const EditRole = ({ isOpen, onClose, role }) => {
+const EditRole = ({ isOpen, onClose, role, showToast }) => {
   if (!isOpen || !role) return null;
 
   const permissionCategories = [
@@ -26,7 +26,7 @@ const EditRole = ({ isOpen, onClose, role }) => {
 
   return (
     <div className="edit-role-overlay">
-      <div className="edit-role-modal card" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+      <div className="edit-role-modal card modal-card" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h5 className="fw-bold mb-0">Edit Role</h5>
           <button className="icon-btn" onClick={onClose} type="button" aria-label="Close">
@@ -71,7 +71,17 @@ const EditRole = ({ isOpen, onClose, role }) => {
           
           <div className="d-flex justify-content-end gap-2 pt-2">
             <button type="button" className="btn btn-outline-secondary px-4" onClick={onClose}>Cancel</button>
-            <button type="button" className="btn btn-primary px-4" style={{ backgroundColor: 'var(--color-primary)', border: 'none' }}>Save Changes</button>
+            <button 
+              type="button" 
+              className="btn btn-primary px-4" 
+              style={{ backgroundColor: 'var(--color-primary)', border: 'none' }}
+              onClick={() => {
+                if (showToast) showToast('Role updated successfully!');
+                onClose();
+              }}
+            >
+              Save Changes
+            </button>
           </div>
         </form>
       </div>
