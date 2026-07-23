@@ -1,1 +1,0 @@
-import './SupportSettings.css';
