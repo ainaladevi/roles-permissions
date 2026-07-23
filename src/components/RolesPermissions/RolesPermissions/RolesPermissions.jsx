@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './RolesPermissions.css';
 import RolesHeader from '../RolesHeader/RolesHeader';
 import RolesList from '../RolesList/RolesList';
 import PermissionMatrix from '../PermissionMatrix/PermissionMatrix';
@@ -6,14 +7,15 @@ import RoleDetailView from '../RoleDetailView/RoleDetailView';
 import CreateRole from '../CreateRole/CreateRole';
 import EditRole from '../EditRole/EditRole';
 import UsersManagement from '../UsersManagement/UsersManagement';
-import { rolesData } from '../../../data/rolesPermissionsData';
-import { initialUsersData } from '../../../data/usersData';
+import { rolesData, initialUsersData } from '../../../data/rolesPermissionsData';
 import { CheckCircle, X } from 'lucide-react';
-import './RolesPermissions.css';
+
 
 const RolesPermissions = () => {
   const [activeModuleTab, setActiveModuleTab] = useState('roles');
-  const [selectedRole, setSelectedRole] = useState(rolesData[0]);
+  const [roles, setRoles] = useState(rolesData);
+  const [globalSearchQuery, setGlobalSearchQuery] = useState('');
+  const [selectedRole, setSelectedRole] = useState(roles[0]);
   const [viewMode, setViewMode] = useState('list');
   const [toasts, setToasts] = useState([]);
   const [isAssignRoleModalOpen, setIsAssignRoleModalOpen] = useState(false);
@@ -37,6 +39,30 @@ const RolesPermissions = () => {
     }, 3000);
   };
 
+  const handleRemoveAdmin = (adminToRemove) => {
+    const updatedRole = {
+      ...selectedRole,
+      admins: selectedRole.admins.filter(a => a.name !== adminToRemove.name),
+      users: selectedRole.users - 1
+    };
+    setSelectedRole(updatedRole);
+    setRoles(prev => prev.map(r => r.role_id === updatedRole.role_id ? updatedRole : r));
+    showToast(`User ${adminToRemove.name} removed from role`);
+  };
+
+  const handleEditAdmin = (adminToEdit) => {
+    setIsAssignRoleModalOpen(true);
+    showToast(`Editing roles for ${adminToEdit.name}`);
+  };
+
+  const filteredRoles = roles.filter(r => {
+    const query = globalSearchQuery.toLowerCase();
+    const matchName = r.name.toLowerCase().includes(query);
+    const matchDesc = r.desc && r.desc.toLowerCase().includes(query);
+    const matchAdmin = r.admins && r.admins.some(admin => admin.name.toLowerCase().includes(query));
+    return matchName || matchDesc || matchAdmin;
+  });
+
   return (
     <div className="roles-permissions-page d-flex flex-column h-100 position-relative">
       <RolesHeader 
@@ -47,6 +73,8 @@ const RolesPermissions = () => {
         currentUserRole={currentUserRole}
         setCurrentUserRole={setCurrentUserRole}
         onCreateRole={() => setIsCreateRoleModalOpen(true)}
+        searchQuery={globalSearchQuery}
+        onSearchChange={setGlobalSearchQuery}
       />
 
       <div className="flex-grow-1 p-4 overflow-auto">
@@ -76,10 +104,11 @@ const RolesPermissions = () => {
             {viewMode === 'list' ? (
               <>
                 <RolesList 
-                  roles={rolesData} 
+                  roles={filteredRoles} 
                   selectedRole={selectedRole} 
                   onSelectRole={(role) => {
                     setSelectedRole(role);
+                    setViewMode('detail');
                   }} 
                   onViewRole={(role) => {
                     setRoleToView(role);
@@ -93,14 +122,20 @@ const RolesPermissions = () => {
                   }}
                 />
                 <PermissionMatrix 
-                  roles={rolesData} 
+                  roles={filteredRoles} 
                   showToast={showToast}
                   onAddAdmin={() => setIsAssignRoleModalOpen(true)}
                   canEditRoles={canEditRoles}
                 />
               </>
             ) : (
-              <RoleDetailView role={selectedRole} showToast={showToast} canEditRoles={canEditRoles} />
+              <RoleDetailView 
+                role={selectedRole} 
+                showToast={showToast} 
+                canEditRoles={canEditRoles} 
+                onRemoveAdmin={handleRemoveAdmin}
+                onEditAdmin={handleEditAdmin}
+              />
             )}
           </div>
         ) : (
@@ -156,7 +191,7 @@ const RolesPermissions = () => {
               <div className="mb-4">
                 <label className="form-label small fw-bold text-muted mb-2">Assign Roles (Multiple allowed)</label>
                 <div className="border rounded p-3" style={{ borderColor: 'var(--color-border)' }}>
-                  {rolesData.map(r => (
+                  {roles.map(r => (
                     <div className="form-check mb-2 last-mb-none" key={r.role_id}>
                       <input className="form-check-input" type="checkbox" id={`assign-${r.role_id}`} />
                       <label className="form-check-label" htmlFor={`assign-${r.role_id}`} style={{ fontSize: '13px' }}>
@@ -188,6 +223,9 @@ const RolesPermissions = () => {
         isOpen={isCreateRoleModalOpen} 
         onClose={() => setIsCreateRoleModalOpen(false)} 
         showToast={showToast}
+        onCreateRoleSubmit={(newRole) => {
+          setRoles(prev => [...prev, newRole]);
+        }}
       />
 
       <EditRole 
@@ -200,7 +238,7 @@ const RolesPermissions = () => {
         showToast={showToast}
       />
 
-      {/* View Role Drawer */}
+
       {isViewRoleDrawerOpen && roleToView && (
         <>
           <div className="drawer-backdrop" onClick={() => setIsViewRoleDrawerOpen(false)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1040, animation: 'fadein 0.2s ease-out' }}></div>

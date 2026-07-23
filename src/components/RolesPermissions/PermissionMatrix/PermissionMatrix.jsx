@@ -1,42 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Check, X, UserPlus, Eye, Settings, Download, MessageSquare, ShieldCheck, Plug, Key, Layers, Users } from 'lucide-react';
 import './PermissionMatrix.css';
 
+import { permissionCategories } from '../../../data/rolesPermissionsData';
+
 const PermissionMatrix = ({ roles, showToast, onAddAdmin, canEditRoles }) => {
-  const permissionCategories = [
-    {
-      name: 'Moderation',
-      keys: [
-        { id: 'moderation.view', label: 'View', icon: Eye },
-        { id: 'moderation.act', label: 'Act', icon: Settings },
-        { id: 'moderation.export', label: 'Export', icon: Download }
-      ]
-    },
-    {
-      name: 'Tickets',
-      keys: [
-        { id: 'tickets.view', label: 'View', icon: Eye },
-        { id: 'tickets.reply', label: 'Reply', icon: MessageSquare },
-        { id: 'tickets.manage', label: 'Manage', icon: Settings }
-      ]
-    },
-    {
-      name: 'Audit',
-      keys: [
-        { id: 'audit.view', label: 'View', icon: Eye },
-        { id: 'audit.view_sensitive', label: 'View Sensitive', icon: ShieldCheck },
-        { id: 'audit.export', label: 'Export', icon: Download }
-      ]
-    },
-    {
-      name: 'Settings',
-      keys: [
-        { id: 'settings.view', label: 'View', icon: Eye },
-        { id: 'settings.edit', label: 'Edit', icon: Settings },
-        { id: 'settings.security_edit', label: 'Security', icon: ShieldCheck }
-      ]
-    }
-  ];
 
   const [permissions, setPermissions] = useState(() => {
     const initial = {};
@@ -51,6 +19,29 @@ const PermissionMatrix = ({ roles, showToast, onAddAdmin, canEditRoles }) => {
     });
     return initial;
   });
+
+  useEffect(() => {
+    setPermissions(prev => {
+      const next = { ...prev };
+      let changed = false;
+      permissionCategories.forEach(cat => {
+        cat.keys.forEach(keyObj => {
+          const key = keyObj.id;
+          if (!next[key]) {
+            next[key] = {};
+            changed = true;
+          }
+          roles.forEach(r => {
+            if (next[key][r.name] === undefined) {
+              next[key][r.name] = r.permissions?.includes(key) || false;
+              changed = true;
+            }
+          });
+        });
+      });
+      return changed ? next : prev;
+    });
+  }, [roles]);
 
   const handleToggle = (key, roleName) => {
     if (!canEditRoles) {
@@ -88,7 +79,7 @@ const PermissionMatrix = ({ roles, showToast, onAddAdmin, canEditRoles }) => {
         )}
       </div>
 
-      {/* Inline Statistics */}
+
       <div className="d-flex align-items-center gap-4 px-4 pb-3 mb-3 border-bottom text-muted" style={{ fontSize: '14px' }}>
         <div className="d-flex align-items-center gap-2">
           <Key size={16} className="text-primary" />

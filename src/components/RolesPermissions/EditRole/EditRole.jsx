@@ -1,28 +1,11 @@
 import React from 'react';
+import { permissionCategories } from '../../../data/rolesPermissionsData';
 import { X } from 'lucide-react';
 import './EditRole.css';
 
 const EditRole = ({ isOpen, onClose, role, showToast }) => {
   if (!isOpen || !role) return null;
 
-  const permissionCategories = [
-    {
-      name: 'Moderation',
-      keys: ['moderation.view', 'moderation.act', 'moderation.export']
-    },
-    {
-      name: 'Tickets',
-      keys: ['tickets.view', 'tickets.reply', 'tickets.manage']
-    },
-    {
-      name: 'Audit',
-      keys: ['audit.view', 'audit.view_sensitive', 'audit.export']
-    },
-    {
-      name: 'Settings',
-      keys: ['settings.view', 'settings.edit', 'settings.security_edit', 'settings.integrations_edit']
-    }
-  ];
 
   return (
     <div className="edit-role-overlay">
@@ -52,13 +35,18 @@ const EditRole = ({ isOpen, onClose, role, showToast }) => {
                 <div key={catIdx} className="mb-3 last-mb-none">
                   <h6 className="fw-bold mb-2" style={{ fontSize: '13px' }}>{cat.name}</h6>
                   <div className="d-flex flex-wrap gap-3">
-                    {cat.keys.map((key, kIdx) => {
-                      const isChecked = role.permissions?.includes(key);
+                    {cat.keys.map((keyObj, kIdx) => {
+                      const key = keyObj.id;
                       return (
                         <div className="form-check" key={kIdx}>
-                          <input className="form-check-input" type="checkbox" id={`edit-${key}`} defaultChecked={isChecked} />
+                          <input 
+                            className="form-check-input" 
+                            type="checkbox" 
+                            id={`edit-${key}`} 
+                            defaultChecked={role.permissions?.includes(key)}
+                          />
                           <label className="form-check-label" htmlFor={`edit-${key}`} style={{ fontSize: '13px' }}>
-                            {key}
+                            {keyObj.label}
                           </label>
                         </div>
                       );

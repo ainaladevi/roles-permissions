@@ -1,28 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { permissionCategories } from '../../../data/rolesPermissionsData';
 import { X } from 'lucide-react';
 import './CreateRole.css';
 
-const CreateRole = ({ isOpen, onClose, showToast }) => {
+const CreateRole = ({ isOpen, onClose, showToast, onCreateRoleSubmit }) => {
+  const [roleName, setRoleName] = useState('');
+  const [roleDesc, setRoleDesc] = useState('');
+  const [selectedPermissions, setSelectedPermissions] = useState([]);
+
   if (!isOpen) return null;
 
-  const permissionCategories = [
-    {
-      name: 'Moderation',
-      keys: ['moderation.view', 'moderation.act', 'moderation.export']
-    },
-    {
-      name: 'Tickets',
-      keys: ['tickets.view', 'tickets.reply', 'tickets.manage']
-    },
-    {
-      name: 'Audit',
-      keys: ['audit.view', 'audit.view_sensitive', 'audit.export']
-    },
-    {
-      name: 'Settings',
-      keys: ['settings.view', 'settings.edit', 'settings.security_edit', 'settings.integrations_edit']
-    }
-  ];
+  const handlePermissionChange = (key) => {
+    setSelectedPermissions(prev => 
+      prev.includes(key) ? prev.filter(p => p !== key) : [...prev, key]
+    );
+  };
+
 
   return (
     <div className="create-role-overlay">
@@ -37,12 +30,24 @@ const CreateRole = ({ isOpen, onClose, showToast }) => {
         <form>
           <div className="mb-3">
             <label className="form-label small fw-bold text-muted">Role Name</label>
-            <input type="text" className="form-control" placeholder="e.g., Content Moderator" />
+            <input 
+              type="text" 
+              className="form-control" 
+              placeholder="e.g., Content Moderator" 
+              value={roleName}
+              onChange={(e) => setRoleName(e.target.value)}
+            />
           </div>
           
           <div className="mb-4">
             <label className="form-label small fw-bold text-muted">Description</label>
-            <textarea className="form-control" rows="3" placeholder="Describe the role's responsibilities..."></textarea>
+            <textarea 
+              className="form-control" 
+              rows="3" 
+              placeholder="Describe the role's responsibilities..."
+              value={roleDesc}
+              onChange={(e) => setRoleDesc(e.target.value)}
+            ></textarea>
           </div>
           
           <div className="mb-4">
@@ -52,14 +57,22 @@ const CreateRole = ({ isOpen, onClose, showToast }) => {
                 <div key={catIdx} className="mb-3 last-mb-none">
                   <h6 className="fw-bold mb-2" style={{ fontSize: '13px' }}>{cat.name}</h6>
                   <div className="d-flex flex-wrap gap-3">
-                    {cat.keys.map((key, kIdx) => (
+                    {cat.keys.map((keyObj, kIdx) => {
+                      const key = keyObj.id;
+                      return (
                       <div className="form-check" key={kIdx}>
-                        <input className="form-check-input" type="checkbox" id={`create-${key}`} />
+                        <input 
+                          className="form-check-input" 
+                          type="checkbox" 
+                          id={`create-${key}`} 
+                          checked={selectedPermissions.includes(key)}
+                          onChange={() => handlePermissionChange(key)}
+                        />
                         <label className="form-check-label" htmlFor={`create-${key}`} style={{ fontSize: '13px' }}>
-                          {key}
+                          {keyObj.label}
                         </label>
                       </div>
-                    ))}
+                    )})}
                   </div>
                 </div>
               ))}
@@ -73,7 +86,26 @@ const CreateRole = ({ isOpen, onClose, showToast }) => {
               className="btn btn-primary px-4" 
               style={{ backgroundColor: 'var(--color-primary)', border: 'none' }}
               onClick={() => {
-                if(showToast) showToast('Role created successfully!');
+                if (!roleName.trim()) {
+                  if (showToast) showToast('Role Name is required');
+                  return;
+                }
+                const newRole = {
+                  role_id: roleName.toLowerCase().replace(/\s+/g, '_'),
+                  name: roleName,
+                  desc: roleDesc,
+                  permissions: selectedPermissions,
+                  users: 0,
+                  admins: [],
+                  color: '#8b5cf6'
+                };
+                if (onCreateRoleSubmit) onCreateRoleSubmit(newRole);
+                if (showToast) showToast('Role created successfully!');
+                
+
+                setRoleName('');
+                setRoleDesc('');
+                setSelectedPermissions([]);
                 onClose();
               }}
             >

@@ -93,7 +93,6 @@
   text-decoration: underline;
 }
 
-/* Add New Role Special Card */
 .add-role-card {
   position: relative;
   overflow: hidden;
@@ -107,11 +106,22 @@
 .add-role-illustration {
   height: 100%;
   width: 50%;
-  background-image: url('file:///C:/Users/Devi/.gemini/antigravity/brain/f0d1533c-5f89-4da0-ba26-0c5cabe21c9e/add_role_illustration_1784547300721.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.3) 100%);
   margin-left: -24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.add-role-illustration::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(var(--color-primary) 1.5px, transparent 1.5px);
+  background-size: 12px 12px;
+  opacity: 0.15;
 }
 
 .add-role-content {

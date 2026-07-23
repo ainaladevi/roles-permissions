@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { initialUsersData } from '../../../data/usersData';
+import { initialUsersData } from '../../../data/rolesPermissionsData';
 import { rolesData } from '../../../data/rolesPermissionsData';
 import { CheckCircle, Search, Filter, Eye, ShieldCheck, ShieldAlert, Shield, Clock, FileText, Mail, Phone, MapPin, Calendar, XCircle, X, Bell, ArrowRight, CheckSquare, UserPlus, Download, RefreshCw } from 'lucide-react';
 import './UsersManagement.css';
@@ -186,7 +186,7 @@ const UsersManagement = ({ onPendingCountChange, canEditRoles }) => {
         </div>
       </div>
 
-      {/* Quick Action Toolbar */}
+
       {canEditRoles && (
         <div className="d-flex flex-wrap gap-2 mb-3">
           <button className="btn btn-sm btn-outline-success d-flex align-items-center gap-1 shadow-sm" onClick={handleBulkApprove}>

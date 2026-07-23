@@ -1,28 +1,11 @@
 import React from 'react';
+import { permissionCategories } from '../../../data/rolesPermissionsData';
 import { Shield, Edit2, UserX } from 'lucide-react';
 import './RoleDetailView.css';
 
-const RoleDetailView = ({ role, showToast, canEditRoles }) => {
+const RoleDetailView = ({ role, showToast, canEditRoles, onRemoveAdmin, onEditAdmin }) => {
   if (!role) return null;
 
-  const permissionCategories = [
-    {
-      name: 'Moderation',
-      keys: ['moderation.view', 'moderation.act', 'moderation.export']
-    },
-    {
-      name: 'Tickets',
-      keys: ['tickets.view', 'tickets.reply', 'tickets.manage']
-    },
-    {
-      name: 'Audit',
-      keys: ['audit.view', 'audit.view_sensitive', 'audit.export']
-    },
-    {
-      name: 'Settings',
-      keys: ['settings.view', 'settings.edit', 'settings.security_edit', 'settings.integrations_edit']
-    }
-  ];
 
   return (
     <div className="role-detail-view d-flex flex-column gap-3 mx-auto" style={{ maxWidth: '1400px' }}>
@@ -53,11 +36,12 @@ const RoleDetailView = ({ role, showToast, canEditRoles }) => {
               <div className="px-4 py-2 fw-bold" style={{ color: 'var(--color-text-muted)', fontSize: '11px', letterSpacing: '0.5px', backgroundColor: 'var(--color-surface-offset)' }}>
                 {cat.name.toUpperCase()}
               </div>
-              {cat.keys.map((key, idx) => {
+              {cat.keys.map((keyObj, idx) => {
+                const key = keyObj.id;
                 const isApproved = role.permissions?.includes(key);
                 return (
                   <div key={idx} className="module-item">
-                    <span style={{ fontSize: '14px' }}>{key}</span>
+                    <span style={{ fontSize: '14px' }}>{keyObj.label}</span>
                     <div className={`status-pill ${isApproved ? 'approved' : 'rejected'}`}>
                       {isApproved ? 'Approved' : 'Rejected'}
                     </div>
@@ -101,10 +85,10 @@ const RoleDetailView = ({ role, showToast, canEditRoles }) => {
                   {canEditRoles && (
                     <td className="py-2 pe-4 align-middle text-end">
                       <div className="d-flex justify-content-end gap-2">
-                        <button className="icon-btn border-0 bg-transparent" aria-label="Edit user" disabled={role.role_id === 'super_admin'} style={role.role_id === 'super_admin' ? { opacity: 0.5, cursor: 'not-allowed' } : {}} onClick={() => showToast(`Edit user ${admin.name}`)}>
+                        <button className="icon-btn border-0 bg-transparent" aria-label="Edit user" disabled={role.role_id === 'super_admin'} style={role.role_id === 'super_admin' ? { opacity: 0.5, cursor: 'not-allowed' } : {}} onClick={() => onEditAdmin ? onEditAdmin(admin) : showToast(`Edit user ${admin.name}`)}>
                           <Edit2 size={16} />
                         </button>
-                        <button className="icon-btn border-0 bg-transparent" aria-label="Remove user" disabled={role.role_id === 'super_admin'} style={role.role_id === 'super_admin' ? { opacity: 0.5, cursor: 'not-allowed' } : {}} onClick={() => showToast(`User ${admin.name} removed`)}>
+                        <button className="icon-btn border-0 bg-transparent" aria-label="Remove user" disabled={role.role_id === 'super_admin'} style={role.role_id === 'super_admin' ? { opacity: 0.5, cursor: 'not-allowed' } : {}} onClick={() => onRemoveAdmin ? onRemoveAdmin(admin) : showToast(`User ${admin.name} removed`)}>
                           <UserX size={16} />
                         </button>
                       </div>

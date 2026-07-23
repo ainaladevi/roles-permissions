@@ -37,7 +37,7 @@ const RolesList = ({ roles, selectedRole, onSelectRole, onViewRole, canEditRoles
         )}
       </div>
 
-      {/* Statistics Cards */}
+
       <div className="row g-4 mb-4">
         <div className="col-md-3">
           <div className="card border-0 shadow-sm rounded-4 h-100 d-flex flex-row align-items-center justify-content-between" style={{ padding: '24px', border: '1px solid var(--color-border) !important' }}>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Search, Bell, HelpCircle, ArrowLeft } from 'lucide-react';
 import './RolesHeader.css';
 
-const RolesHeader = ({ viewMode = 'list', selectedRole, onBack, canEditRoles, currentUserRole, setCurrentUserRole, onCreateRole }) => {
+const RolesHeader = ({ viewMode = 'list', selectedRole, onBack, canEditRoles, currentUserRole, setCurrentUserRole, onCreateRole, searchQuery, onSearchChange }) => {
   return (
     <div className="roles-header topbar border-bottom">
       <div className="page-title d-flex align-items-center gap-3">
@@ -48,6 +48,8 @@ const RolesHeader = ({ viewMode = 'list', selectedRole, onBack, canEditRoles, cu
             placeholder="Search users, posts, reports..." 
             className="form-control"
             style={{ paddingLeft: '32px' }}
+            value={searchQuery || ''}
+            onChange={(e) => onSearchChange?.(e.target.value)}
           />
         </div>
         

@@ -1,1 +1,81 @@
-/* RolesPermissions styles */
+.main{flex:1;min-width:0;display:flex;flex-direction:column;height:100dvh;overflow-y:auto}
+.content{padding:24px 28px 48px;max-width:1400px;width:100%;margin:0 auto}
+.page{display:none;animation:fadein .3s cubic-bezier(.16,1,.3,1)}
+.page.active{display:block}
+.grid{display:grid;gap:16px}
+.card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:18px;box-shadow:0 8px 32px 0 rgba(31, 38, 135, 0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--color-text) !important;transition:transform 0.3s cubic-bezier(.16,1,.3,1), box-shadow 0.3s cubic-bezier(.16,1,.3,1), border-color 0.3s ease}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 40px 0 rgba(31, 38, 135, 0.1);border-color:var(--color-surface-dynamic)}
+
+.btn { transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important; }
+.btn:active { transform: scale(0.97); }
+.badge { transition: transform 0.2s ease; }
+.badge:hover { transform: scale(1.05); }
+
+body {
+  background-image: radial-gradient(circle at 0% 0%, rgba(79, 70, 229, 0.03) 0%, transparent 50%),
+                    radial-gradient(circle at 100% 100%, rgba(122, 57, 187, 0.03) 0%, transparent 50%);
+  background-attachment: fixed;
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] body {
+  background-image: radial-gradient(circle at 15% 50%, rgba(79, 152, 163, 0.08) 0%, transparent 35%),
+                    radial-gradient(circle at 85% 30%, rgba(168, 111, 223, 0.08) 0%, transparent 35%);
+}
+
+[data-theme="dark"] {
+  --color-text-muted: #9ca3af;
+  --color-text-faint: #6b7280;
+}
+
+[data-theme="dark"] .text-muted { color: var(--color-text-muted) !important; }
+[data-theme="dark"] .text-body { color: var(--color-text) !important; }
+[data-theme="dark"] .bg-white { background-color: var(--color-surface) !important; }
+[data-theme="dark"] .bg-light { background-color: var(--color-surface-offset) !important; }
+[data-theme="dark"] .card { color: var(--color-text) !important; background-color: var(--color-surface) !important; }
+[data-theme="dark"] .border, 
+[data-theme="dark"] .border-top, 
+[data-theme="dark"] .border-bottom, 
+[data-theme="dark"] .border-start, 
+[data-theme="dark"] .border-end { border-color: var(--color-border) !important; }
+
+[data-theme="dark"] .form-select, 
+[data-theme="dark"] .form-control {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+[data-theme="dark"] .form-select:focus, 
+[data-theme="dark"] .form-control:focus {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 0.25rem rgba(var(--color-primary), 0.25) !important;
+}
+[data-theme="dark"] .form-control::placeholder {
+  color: var(--color-text-faint) !important;
+}
+
+[data-theme="dark"] .table {
+  --bs-table-bg: transparent !important;
+  --bs-table-color: var(--color-text) !important;
+  color: var(--color-text) !important;
+}
+[data-theme="dark"] .table td, 
+[data-theme="dark"] .table th {
+  background-color: transparent !important;
+  color: inherit;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+[data-theme="dark"] .table-hover tbody tr {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+[data-theme="dark"] .table-hover tbody tr:hover {
+  transform: scale(1.005);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 10;
+}
+[data-theme="dark"] .table-hover tbody tr:hover td {
+  background-color: var(--color-surface-offset) !important;
+}
